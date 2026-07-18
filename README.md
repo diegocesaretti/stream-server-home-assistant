@@ -20,6 +20,10 @@ http://HOME_ASSISTANT_IP:11470
 
 Use the Raspberry Pi or Home Assistant host LAN address rather than `localhost`, because Cast receivers must reach the stream URL directly.
 
+### Prototype migration
+
+Version `0.2.0` changes the app slug from `stremio_stream_engine` to `stream_server_home_assistant`. Home Assistant treats it as a different app. Remove the old prototype before installing this version.
+
 ## Supported architectures
 
 - `aarch64` — Raspberry Pi 5 and other 64-bit ARM hosts
