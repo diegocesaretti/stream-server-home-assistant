@@ -13,6 +13,10 @@ This app provides a local torrent streaming backend for **Stremio Stream Bridge*
 
 The first installation builds the Rust binary locally. On a Raspberry Pi this can take substantially longer than installing a prebuilt image.
 
+### Migration from the prototype
+
+Version `0.2.0` changes the app slug from `stremio_stream_engine` to `stream_server_home_assistant`. Home Assistant treats the new slug as a separate app. Remove the old prototype before installing the renamed app.
+
 ## Connect Stremio Stream Bridge
 
 Open:
