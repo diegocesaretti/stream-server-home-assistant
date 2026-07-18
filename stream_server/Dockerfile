@@ -61,7 +61,7 @@ LABEL \
     io.hass.version="${BUILD_VERSION}" \
     io.hass.type="app" \
     io.hass.arch="${BUILD_ARCH}" \
-    org.opencontainers.image.source="https://github.com/diegocesaretti/stremio-stream-engine-ha" \
+    org.opencontainers.image.source="https://github.com/diegocesaretti/stream-server-home-assistant" \
     org.opencontainers.image.licenses="MIT"
 
 RUN apt-get update \
