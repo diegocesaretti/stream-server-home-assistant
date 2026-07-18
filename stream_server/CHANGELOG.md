@@ -3,6 +3,7 @@
 ## 0.1.0
 
 - Initial Home Assistant app package.
+- Published from its own dedicated Home Assistant app repository.
 - Builds `perpetus/stream-server` v0.1.8 for `aarch64` and `amd64`.
 - Uses the upstream-supported `libtorrent` torrent backend.
 - Exposes the Stremio-compatible API on TCP port 11470.
