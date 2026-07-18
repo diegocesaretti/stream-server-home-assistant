@@ -1,7 +1,7 @@
-# Stremio Stream Engine
+# Stream Server for Home Assistant
 
-Runs the open-source `perpetus/stream-server` engine locally on Home Assistant OS or Supervised installations.
+Home Assistant app that runs `perpetus/stream-server` and exposes its Stremio-compatible API on port `11470`.
 
-It exposes the Stremio-compatible API on port `11470` for use by the **Stremio Stream Bridge** custom integration.
+Use it with the **Stremio Stream Bridge** custom integration.
 
-The first installation builds the Rust server locally for the selected architecture. Raspberry Pi 5 uses the `aarch64` build and PCs use `amd64`.
+Raspberry Pi 5 uses the `aarch64` build and PCs use `amd64`.
