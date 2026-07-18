@@ -1,4 +1,4 @@
-# Stremio Stream Engine
+# Stream Server for Home Assistant
 
 This app provides a local torrent streaming backend for **Stremio Stream Bridge**. It is based on the MIT-licensed [`perpetus/stream-server`](https://github.com/perpetus/stream-server) project and uses the upstream-supported `libtorrent` backend.
 
@@ -6,7 +6,7 @@ This app provides a local torrent streaming backend for **Stremio Stream Bridge*
 
 1. Add this repository to the Home Assistant app store:
    `https://github.com/diegocesaretti/stream-server-home-assistant`
-2. Install **Stremio Stream Engine**.
+2. Install **Stream Server for Home Assistant**.
 3. Keep TCP port `11470` mapped to `11470`.
 4. Start the app and enable **Start on boot** and **Watchdog**.
 5. Open the app logs and confirm that the server is listening on port `11470`.
@@ -36,12 +36,12 @@ http://homeassistant.local:11470
 
 An IP address is usually more reliable for Cast devices.
 
-## Switching between local and external engines
+## Switching between local and external servers
 
 The integration remains compatible with an external PC server. Change only the configured server URL:
 
-- Local Raspberry Pi engine: `http://HOME_ASSISTANT_IP:11470`
-- External PC engine: `http://PC_IP:11470`
+- Local Raspberry Pi server: `http://HOME_ASSISTANT_IP:11470`
+- External PC server: `http://PC_IP:11470`
 
 All catalog, provider, subtitle, quality, fallback and Cast settings remain unchanged.
 
@@ -53,7 +53,7 @@ The app stores its configuration and cache below `/data`, which Home Assistant i
 
 Direct Cast playback does not use the Raspberry Pi GPU. CPU and memory use should stay low after torrent metadata has been resolved. Network and storage throughput are the main resources used.
 
-Real-time transcoding through FFmpeg is available in the upstream engine but is not the recommended default on Raspberry Pi. Keep **Audio compatibility** set to `direct` unless a source specifically requires transcoding.
+Real-time transcoding through FFmpeg is available in the upstream server but is not the recommended default on Raspberry Pi. Keep **Audio compatibility** set to `direct` unless a source specifically requires transcoding.
 
 ## Troubleshooting
 
