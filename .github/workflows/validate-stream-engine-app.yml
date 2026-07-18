@@ -1,4 +1,4 @@
-name: Validate Stream Engine App
+name: Validate Stream Server App
 
 on:
   push:
@@ -59,9 +59,9 @@ jobs:
         run: |
           set -o pipefail
           docker build \
-            --build-arg BUILD_VERSION=0.1.0 \
+            --build-arg BUILD_VERSION=0.2.0 \
             --build-arg BUILD_ARCH=${{ matrix.arch }} \
-            --tag stremio-stream-engine:${{ matrix.arch }} \
+            --tag stream-server-home-assistant:${{ matrix.arch }} \
             stream_server >docker-build-${{ matrix.arch }}.log 2>&1
 
       - name: Upload Docker build log
@@ -84,7 +84,7 @@ jobs:
       - name: Inspect image
         if: steps.docker_build.outcome == 'success'
         run: |
-          docker image inspect stremio-stream-engine:${{ matrix.arch }} >/dev/null
+          docker image inspect stream-server-home-assistant:${{ matrix.arch }} >/dev/null
 
       - name: Smoke test HTTP API
         id: smoke_test
@@ -93,9 +93,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          DATA_DIR="${RUNNER_TEMP}/stream-engine-${{ matrix.arch }}"
+          DATA_DIR="${RUNNER_TEMP}/stream-server-home-assistant-${{ matrix.arch }}"
           LOG_FILE="docker-runtime-${{ matrix.arch }}.log"
-          CONTAINER_NAME="stremio-stream-engine-${{ matrix.arch }}-test"
+          CONTAINER_NAME="stream-server-home-assistant-${{ matrix.arch }}-test"
           mkdir -p "${DATA_DIR}"
           printf '%s\n' '{"log_level":"info"}' >"${DATA_DIR}/options.json"
 
@@ -109,7 +109,7 @@ jobs:
             --name "${CONTAINER_NAME}" \
             --publish 11470:11470 \
             --volume "${DATA_DIR}:/data" \
-            stremio-stream-engine:${{ matrix.arch }} >/dev/null
+            stream-server-home-assistant:${{ matrix.arch }} >/dev/null
 
           for _ in $(seq 1 60); do
             if curl --fail --silent --show-error \

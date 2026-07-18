@@ -1,8 +1,8 @@
-name: Stremio Stream Engine
-version: "0.1.0"
-slug: stremio_stream_engine
+name: Stream Server for Home Assistant
+version: "0.2.0"
+slug: stream_server_home_assistant
 description: >-
-  Local Stremio-compatible torrent streaming engine for Stremio Stream Bridge.
+  Local Stremio-compatible torrent stream server for Stremio Stream Bridge.
 url: https://github.com/diegocesaretti/stream-server-home-assistant
 arch:
   - aarch64

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0
+
+- Renames the Home Assistant app to **Stream Server for Home Assistant**.
+- Changes the app slug from `stremio_stream_engine` to `stream_server_home_assistant`.
+- Aligns container metadata, CI image names and documentation with the repository name.
+- This slug change creates a new Home Assistant app identity; an installed `stremio_stream_engine` prototype must be removed before installing the renamed app.
+
 ## 0.1.0
 
 - Initial Home Assistant app package.

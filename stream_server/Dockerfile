@@ -56,8 +56,8 @@ ARG BUILD_VERSION
 ARG BUILD_ARCH
 
 LABEL \
-    io.hass.name="Stremio Stream Engine" \
-    io.hass.description="Local stream-server engine for Stremio Stream Bridge" \
+    io.hass.name="Stream Server for Home Assistant" \
+    io.hass.description="Local Stremio-compatible stream server for Stremio Stream Bridge" \
     io.hass.version="${BUILD_VERSION}" \
     io.hass.type="app" \
     io.hass.arch="${BUILD_ARCH}" \
