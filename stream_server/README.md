@@ -4,4 +4,4 @@ Home Assistant app that runs `perpetus/stream-server` and exposes its Stremio-co
 
 Use it with the **Stremio Stream Bridge** custom integration.
 
-Raspberry Pi 5 uses the `aarch64` build and PCs use `amd64`.
+Home Assistant downloads a prebuilt image for the host architecture: Raspberry Pi 5 uses `aarch64` and PCs use `amd64`. Rust is not compiled on the Home Assistant host.
