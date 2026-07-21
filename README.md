@@ -20,9 +20,11 @@ http://HOME_ASSISTANT_IP:11470
 
 Use the Raspberry Pi or Home Assistant host LAN address rather than `localhost`, because Cast receivers must reach the stream URL directly.
 
+Version `0.3.0` and later use prebuilt multi-architecture images from GitHub Container Registry. Home Assistant downloads the correct `aarch64` or `amd64` image instead of compiling Rust on the host.
+
 ### Prototype migration
 
-Version `0.2.0` changes the app slug from `stremio_stream_engine` to `stream_server_home_assistant`. Home Assistant treats it as a different app. Remove the old prototype before installing this version.
+Version `0.2.0` changed the app slug from `stremio_stream_engine` to `stream_server_home_assistant`. Home Assistant treats it as a different app. Remove the old prototype before installing the current version.
 
 ## Supported architectures
 
@@ -31,4 +33,4 @@ Version `0.2.0` changes the app slug from `stremio_stream_engine` to `stream_ser
 
 ## Upstream
 
-The container builds the pinned `perpetus/stream-server` v0.1.8 release with the upstream-supported `libtorrent` backend.
+The published images are built from the pinned `perpetus/stream-server` v0.1.8 release with the upstream-supported `libtorrent` backend.

@@ -11,11 +11,11 @@ This app provides a local torrent streaming backend for **Stremio Stream Bridge*
 4. Start the app and enable **Start on boot** and **Watchdog**.
 5. Open the app logs and confirm that the server is listening on port `11470`.
 
-The first installation builds the Rust binary locally. On a Raspberry Pi this can take substantially longer than installing a prebuilt image.
+Version `0.3.0` and later download a prebuilt image from GitHub Container Registry. Home Assistant automatically selects `aarch64` on Raspberry Pi 5 or `amd64` on x86-64 hosts, so the host no longer compiles Rust during installation.
 
 ### Migration from the prototype
 
-Version `0.2.0` changes the app slug from `stremio_stream_engine` to `stream_server_home_assistant`. Home Assistant treats the new slug as a separate app. Remove the old prototype before installing the renamed app.
+Version `0.2.0` changed the app slug from `stremio_stream_engine` to `stream_server_home_assistant`. Home Assistant treats the new slug as a separate app. Remove the old prototype before installing the renamed app.
 
 ## Connect Stremio Stream Bridge
 
@@ -72,9 +72,9 @@ Real-time transcoding through FFmpeg is available in the upstream server but is 
 
 Use the integration's source fallback and Cast compatibility filter. Prefer MP4, H.264 and AAC sources. MKV, HEVC, DTS and multichannel audio may still be unsupported by the receiver.
 
-### Build fails during installation
+### Image download fails
 
-The initial version builds upstream source locally. Check free disk space and memory, then inspect the Supervisor build log. A later release can replace this with prebuilt multi-architecture container images.
+Confirm that the Home Assistant host has internet access and can reach `ghcr.io`. The app no longer compiles locally; installation depends on downloading the public versioned container image.
 
 ## Legal
 

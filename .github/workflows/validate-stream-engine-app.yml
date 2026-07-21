@@ -1,25 +1,37 @@
-name: Validate Stream Server App
+name: Build and publish Stream Server App
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "repository.yaml"
       - "stream_server/**"
       - ".github/workflows/validate-stream-engine-app.yml"
   pull_request:
+    branches:
+      - main
     paths:
       - "repository.yaml"
       - "stream_server/**"
       - ".github/workflows/validate-stream-engine-app.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: diegocesaretti/stream-server-home-assistant
+
 jobs:
-  validate:
-    name: Validate ${{ matrix.arch }}
+  build:
+    name: Build and test ${{ matrix.arch }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:
@@ -38,18 +50,29 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Validate YAML and shell
+      - name: Validate metadata and read version
+        id: metadata
+        shell: bash
         run: |
+          set -euo pipefail
           python -m pip install --disable-pip-version-check pyyaml
           python - <<'PY'
           from pathlib import Path
           import yaml
 
-          for path in [Path("repository.yaml"), *Path("stream_server").rglob("*.yaml")]:
+          paths = [Path("repository.yaml"), *Path("stream_server").rglob("*.yaml")]
+          for path in paths:
               with path.open(encoding="utf-8") as stream:
                   yaml.safe_load(stream)
               print(f"Validated {path}")
+
+          with Path("stream_server/config.yaml").open(encoding="utf-8") as stream:
+              config = yaml.safe_load(stream)
+          print(f"version={config['version']}")
+          with Path("version.txt").open("w", encoding="utf-8") as stream:
+              stream.write(str(config["version"]))
           PY
+          echo "version=$(cat version.txt)" >> "$GITHUB_OUTPUT"
           bash -n stream_server/run.sh
 
       - name: Build ${{ matrix.arch }} app image
@@ -59,7 +82,7 @@ jobs:
         run: |
           set -o pipefail
           docker build \
-            --build-arg BUILD_VERSION=0.2.0 \
+            --build-arg BUILD_VERSION=${{ steps.metadata.outputs.version }} \
             --build-arg BUILD_ARCH=${{ matrix.arch }} \
             --tag stream-server-home-assistant:${{ matrix.arch }} \
             stream_server >docker-build-${{ matrix.arch }}.log 2>&1
@@ -83,8 +106,7 @@ jobs:
 
       - name: Inspect image
         if: steps.docker_build.outcome == 'success'
-        run: |
-          docker image inspect stream-server-home-assistant:${{ matrix.arch }} >/dev/null
+        run: docker image inspect stream-server-home-assistant:${{ matrix.arch }} >/dev/null
 
       - name: Smoke test HTTP API
         id: smoke_test
@@ -143,3 +165,68 @@ jobs:
           echo "Container smoke test failed:"
           cat docker-runtime-${{ matrix.arch }}.log || true
           exit 1
+
+      - name: Log in to GitHub Container Registry
+        if: github.ref == 'refs/heads/main' && steps.smoke_test.outcome == 'success'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push architecture image
+        if: github.ref == 'refs/heads/main' && steps.smoke_test.outcome == 'success'
+        shell: bash
+        run: |
+          REMOTE_IMAGE="${REGISTRY}/${IMAGE_NAME}:${{ steps.metadata.outputs.version }}-${{ matrix.arch }}"
+          docker tag stream-server-home-assistant:${{ matrix.arch }} "${REMOTE_IMAGE}"
+          docker push "${REMOTE_IMAGE}"
+
+  manifest:
+    name: Publish multi-architecture manifest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Read app version
+        id: metadata
+        shell: bash
+        run: |
+          VERSION="$(python - <<'PY'
+          from pathlib import Path
+          import re
+
+          content = Path("stream_server/config.yaml").read_text(encoding="utf-8")
+          match = re.search(r'^version:\s*["\x27]?([^"\x27\s]+)', content, re.MULTILINE)
+          if not match:
+              raise SystemExit("Unable to read app version")
+          print(match.group(1))
+          PY
+          )"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish versioned and latest manifests
+        shell: bash
+        run: |
+          VERSION="${{ steps.metadata.outputs.version }}"
+          IMAGE="${REGISTRY}/${IMAGE_NAME}"
+          docker buildx imagetools create \
+            --tag "${IMAGE}:${VERSION}" \
+            --tag "${IMAGE}:latest" \
+            "${IMAGE}:${VERSION}-amd64" \
+            "${IMAGE}:${VERSION}-aarch64"
+          docker buildx imagetools inspect "${IMAGE}:${VERSION}"

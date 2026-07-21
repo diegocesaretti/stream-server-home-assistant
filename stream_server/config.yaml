@@ -1,9 +1,10 @@
 name: Stream Server for Home Assistant
-version: "0.2.0"
+version: "0.3.0"
 slug: stream_server_home_assistant
 description: >-
   Local Stremio-compatible torrent stream server for Stremio Stream Bridge.
 url: https://github.com/diegocesaretti/stream-server-home-assistant
+image: ghcr.io/diegocesaretti/stream-server-home-assistant
 arch:
   - aarch64
   - amd64

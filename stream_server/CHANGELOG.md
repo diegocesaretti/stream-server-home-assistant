@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- Publishes native `aarch64` and `amd64` container images to GitHub Container Registry.
+- Publishes a generic multi-architecture image manifest.
+- Configures Home Assistant to download the versioned prebuilt image instead of compiling Rust locally.
+- Keeps native build validation and the `/heartbeat` smoke test before publishing.
+
 ## 0.2.0
 
 - Renames the Home Assistant app to **Stream Server for Home Assistant**.
